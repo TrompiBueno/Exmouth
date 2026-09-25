@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Exmouth 2026 — Agenda en tiempo real</title>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--text:#172033;--muted:#687386;--accent:#315efb;--border:#e4e9f2;--ok:#16a673;--next:#ff9f43}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{padding:22px 18px;background:#111a2e;color:white} header h1{margin:0 0 5px;font-size:26px} header p{margin:0;color:#cbd3e5}
+main{max-width:900px;margin:auto;padding:16px}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+button{border:1px solid var(--border);background:white;border-radius:12px;padding:10px 13px;font-weight:650;cursor:pointer}
+button.active{background:var(--accent);color:white;border-color:var(--accent)}
+.hero{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:18px;box-shadow:0 5px 20px #1d355705;margin-bottom:14px}
+.date{font-weight:750;color:var(--muted);font-size:14px}.clock{font-size:31px;font-weight:800;margin:3px 0 14px}
+.now{border-radius:17px;background:#eef3ff;padding:16px;border:1px solid #dce5ff}
+.now .label{font-size:12px;font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:.08em}
+.now h2{margin:4px 0;font-size:24px}.times{color:var(--muted);font-size:14px}
+.progress{height:11px;background:#dde3ee;border-radius:20px;overflow:hidden;margin:12px 0 5px}.bar{height:100%;background:var(--accent);width:0;transition:width .5s}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:13px}.small{padding:12px;border:1px solid var(--border);border-radius:14px;background:white}.small b{display:block;margin-bottom:3px}.small span{color:var(--muted);font-size:13px}
+.section-title{font-size:19px;margin:22px 0 9px}.timeline{display:grid;gap:8px}.item{display:grid;grid-template-columns:92px 1fr;gap:12px;align-items:center;background:white;border:1px solid var(--border);border-radius:14px;padding:12px}.item.current{border:2px solid var(--accent);background:#f7f9ff}.time{font-weight:800;font-size:14px}.activity{font-weight:700}.tag{display:inline-block;margin-left:7px;font-size:11px;padding:3px 7px;border-radius:99px;background:#eaf7f2;color:var(--ok)}.note{font-size:12px;color:var(--muted);margin-top:3px}
+@media(max-width:600px){.grid{grid-template-columns:1fr}.item{grid-template-columns:76px 1fr}.clock{font-size:27px}}
+</style>
+</head>
+<body>
+<header><h1>🇬🇧 Exmouth 2026</h1><p>Agenda del viaje · I.E.S. San Fernando · 27/09/2026–03/10/2026</p></header>
+<main>
+<div class="controls" id="days"></div>
+<section class="hero">
+  <div class="date" id="date"></div><div class="clock" id="clock"></div>
+  <div class="now">
+    <div class="label" id="state">Estado</div><h2 id="current">—</h2><div class="times" id="currentTimes">—</div>
+    <div class="progress"><div class="bar" id="bar"></div></div><div class="times" id="percent"></div>
+  </div>
+  <div class="grid">
+    <div class="small"><b>Anterior</b><span id="prev">—</span></div>
+    <div class="small"><b>Siguiente</b><span id="next">—</span></div>
+  </div>
+</section>
+<h3 class="section-title">Todas las actividades del día</h3><div class="timeline" id="timeline"></div>
+</main>
+<script>
+const days=[
+{d:"Domingo 27/09",date:"2026-09-27",items:[
+["09:00","12:30","Llegada"],["12:30","13:30","Comida"],["13:30","16:30","Orientación / tour"],["18:00","19:00","Cena"],["20:00","21:45","Tarde libre en familia"]]},
+{d:"Lunes 28/09",date:"2026-09-28",items:[
+["09:00","12:30","Clases"],["12:30","13:30","Comida"],["13:30","16:30","Jurassic Coast"],["18:00","19:00","Cena"],["20:00","21:45","Tarde libre en familia"]]},
+{d:"Martes 29/09",date:"2026-09-29",items:[
+["09:00","12:30","Clases"],["12:30","13:30","Comida"],["13:30","16:30","Bowling"],["18:00","19:00","Cena"],["20:00","21:45","Disco"]]},
+{d:"Miércoles 30/09",date:"2026-09-30",items:[
+["09:00","12:30","Excursión a Bristol"],["12:30","13:30","Comida"],["13:30","16:30","Exeter Cultural"],["18:00","19:00","Cena"],["20:00","21:45","Tarde libre en familia"]]},
+{d:"Jueves 01/10",date:"2026-10-01",items:[
+["09:00","12:30","Clases"],["12:30","13:30","Comida"],["13:30","16:30","Actividad / excursión del programa"],["18:00","19:00","Cena"],["20:00","21:45","Tarde libre en familia"]]},
+{d:"Viernes 02/10",date:"2026-10-02",items:[
+["09:00","12:30","Clases"],["12:30","13:30","Comida"],["13:30","16:30","Actividad / excursión del programa"],["18:00","19:00","Cena"],["20:00","21:45","Tarde libre en familia"]]},
+{d:"Sábado 03/10",date:"2026-10-03",items:[
+["09:00","12:30","Excursión guiada a Londres"],["12:30","13:30","Comida"],["13:30","16:30","Excursión guiada a Londres"],["18:00","19:00","Regreso"]]}
+];
+
+let selected=0;
+const daysEl=document.getElementById('days');
+days.forEach((x,i)=>{let b=document.createElement('button');b.textContent=x.d.split(' ')[0]+' '+x.d.slice(-5);b.onclick=()=>{selected=i;render();};daysEl.appendChild(b);});
+
+function mins(t){let [h,m]=t.split(':').map(Number);return h*60+m}
+function fmt(x){return x.toString().padStart(2,'0')}
+function render(){
+ [...daysEl.children].forEach((b,i)=>b.classList.toggle('active',i===selected));
+ const day=days[selected], now=new Date(), same=now.toISOString().slice(0,10)===day.date;
+ document.getElementById('date').textContent=day.d+(same?' · HOY':'');
+ document.getElementById('clock').textContent=fmt(now.getHours())+':'+fmt(now.getMinutes())+':'+fmt(now.getSeconds());
+ let n=now.getHours()*60+now.getMinutes()+now.getSeconds()/60, idx=-1;
+ day.items.forEach((it,i)=>{if(n>=mins(it[0])&&n<mins(it[1]))idx=i});
+ let cur=idx>=0?day.items[idx]:null;
+ document.getElementById('current').textContent=cur?cur[2]:(n<mins(day.items[0][0])?'Aún no ha empezado el programa': 'Programa terminado');
+ document.getElementById('state').textContent=cur?'Ahora mismo':(n<mins(day.items[0][0])?'Próximamente':'Fin del día');
+ document.getElementById('currentTimes').textContent=cur?cur[0]+' – '+cur[1]:'';
+ let pct=cur?Math.max(0,Math.min(100,(n-mins(cur[0]))/(mins(cur[1])-mins(cur[0]))*100)):0;
+ document.getElementById('bar').style.width=pct+'%';document.getElementById('percent').textContent=cur?Math.round(pct)+'% de la actividad':'';
+ document.getElementById('prev').textContent=idx>0?day.items[idx-1][2]:(idx===0?'Inicio del día':'—');
+ document.getElementById('next').textContent=idx>=0&&idx<day.items.length-1?day.items[idx+1][2]:(idx===-1?day.items[0][2]:'Fin del día');
+ const tl=document.getElementById('timeline');tl.innerHTML='';
+ day.items.forEach((it,i)=>{let el=document.createElement('div');el.className='item '+(i===idx?'current':'');el.innerHTML='<div class="time">'+it[0]+'<br>↓<br>'+it[1]+'</div><div><div class="activity">'+it[2]+(i===idx?'<span class="tag">AHORA</span>':'')+'</div><div class="note">'+(i===idx?'Actividad en curso':'')+'</div></div>';tl.appendChild(el)});
+}
+render();setInterval(render,1000);
+</script>
+</body></html>
