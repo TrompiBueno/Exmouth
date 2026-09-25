@@ -2,86 +2,157 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Exmouth 2026 — Agenda en tiempo real</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#10182d">
+<title>EXMOUTH 2026 · Miguel Ojeda</title>
 <style>
-:root{--bg:#f4f7fb;--card:#fff;--text:#172033;--muted:#687386;--accent:#315efb;--border:#e4e9f2;--ok:#16a673;--next:#ff9f43}
-*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
-header{padding:22px 18px;background:#111a2e;color:white} header h1{margin:0 0 5px;font-size:26px} header p{margin:0;color:#cbd3e5}
-main{max-width:900px;margin:auto;padding:16px}
-.controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-button{border:1px solid var(--border);background:white;border-radius:12px;padding:10px 13px;font-weight:650;cursor:pointer}
-button.active{background:var(--accent);color:white;border-color:var(--accent)}
-.hero{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:18px;box-shadow:0 5px 20px #1d355705;margin-bottom:14px}
-.date{font-weight:750;color:var(--muted);font-size:14px}.clock{font-size:31px;font-weight:800;margin:3px 0 14px}
-.now{border-radius:17px;background:#eef3ff;padding:16px;border:1px solid #dce5ff}
-.now .label{font-size:12px;font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:.08em}
-.now h2{margin:4px 0;font-size:24px}.times{color:var(--muted);font-size:14px}
-.progress{height:11px;background:#dde3ee;border-radius:20px;overflow:hidden;margin:12px 0 5px}.bar{height:100%;background:var(--accent);width:0;transition:width .5s}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:13px}.small{padding:12px;border:1px solid var(--border);border-radius:14px;background:white}.small b{display:block;margin-bottom:3px}.small span{color:var(--muted);font-size:13px}
-.section-title{font-size:19px;margin:22px 0 9px}.timeline{display:grid;gap:8px}.item{display:grid;grid-template-columns:92px 1fr;gap:12px;align-items:center;background:white;border:1px solid var(--border);border-radius:14px;padding:12px}.item.current{border:2px solid var(--accent);background:#f7f9ff}.time{font-weight:800;font-size:14px}.activity{font-weight:700}.tag{display:inline-block;margin-left:7px;font-size:11px;padding:3px 7px;border-radius:99px;background:#eaf7f2;color:var(--ok)}.note{font-size:12px;color:var(--muted);margin-top:3px}
-@media(max-width:600px){.grid{grid-template-columns:1fr}.item{grid-template-columns:76px 1fr}.clock{font-size:27px}}
+:root{
+ --bg:#07101f;--panel:#101a30;--panel2:#16233d;--line:#263653;--text:#f5f7fb;
+ --muted:#aab6cc;--blue:#5b8cff;--cyan:#50d8ff;--green:#39d98a;--orange:#ffb45c;
+ --shadow:0 18px 50px #0007;
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(circle at 20% 0,#203e78 0,#07101f 38%,#050b15 100%);
+color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button{font:inherit}
+.hero{padding:28px 18px 22px;max-width:1050px;margin:auto}
+.brand{display:flex;align-items:center;justify-content:space-between;gap:15px}
+.eyebrow{font-size:12px;font-weight:900;letter-spacing:.18em;color:var(--cyan)}
+h1{font-size:clamp(32px,8vw,60px);line-height:.95;margin:8px 0}
+.subtitle{color:var(--muted);font-size:15px}
+.badge{padding:10px 13px;border:1px solid #ffffff22;background:#ffffff0b;border-radius:14px;white-space:nowrap}
+main{max-width:1050px;margin:auto;padding:0 15px 45px}
+.card{background:linear-gradient(145deg,#111c33ee,#0d1629ee);border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);overflow:hidden}
+.top{padding:18px}.toolbar{display:flex;gap:8px;overflow:auto;padding-bottom:3px}
+.day{flex:0 0 auto;background:#0a1427;border:1px solid var(--line);color:var(--muted);padding:10px 13px;border-radius:13px;font-weight:800}
+.day.active{background:linear-gradient(135deg,var(--blue),#3d6cf0);border-color:#7fa1ff;color:#fff}
+.status{margin-top:14px;padding:20px;border-radius:20px;background:linear-gradient(135deg,#172b53,#10203c);border:1px solid #365386}
+.statusline{display:flex;justify-content:space-between;gap:10px;align-items:center}.live{color:var(--green);font-weight:900;font-size:12px;letter-spacing:.1em}
+.clock{font-size:clamp(29px,7vw,48px);font-weight:950;letter-spacing:.02em;margin:2px 0}
+.date{color:var(--muted);font-size:14px}.nowtitle{font-size:clamp(24px,6vw,38px);font-weight:900;margin:8px 0 4px}
+.time{font-weight:750;color:#d4def0}.progress{height:14px;background:#071020;border-radius:99px;margin:17px 0 8px;overflow:hidden;border:1px solid #ffffff0d}
+.bar{height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--cyan));transition:width .4s;border-radius:99px}
+.meta{display:flex;justify-content:space-between;color:var(--muted);font-size:12px}
+.navgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.mini{background:#0b1528;border:1px solid var(--line);padding:13px;border-radius:16px}
+.mini small{display:block;color:var(--muted);font-weight:700;margin-bottom:4px}.mini b{font-size:15px}
+.controls{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}.ctrl{background:#111d33;border:1px solid var(--line);color:#e8eef9;border-radius:12px;padding:9px 12px;font-weight:800}
+h2{margin:24px 2px 10px;font-size:21px}
+.timeline{display:grid;gap:9px}.event{display:grid;grid-template-columns:88px 1fr;gap:12px;padding:14px;background:#0d172a;border:1px solid var(--line);border-radius:17px}
+.event.current{border:1px solid #6f96ff;background:linear-gradient(90deg,#162a50,#0e192c);box-shadow:0 0 0 2px #5b8cff18}
+.event.past{opacity:.62}.t{font-weight:900;color:#b9c7dd}.name{font-size:16px;font-weight:900}.desc{color:var(--muted);font-size:12px;margin-top:3px}.pill{display:inline-block;margin-left:7px;padding:3px 7px;border-radius:99px;font-size:10px;background:#163e35;color:#68e7aa;vertical-align:middle}
+.bottom{margin-top:28px;text-align:center;padding:22px;border-top:1px solid var(--line);color:var(--muted)}
+.author{font-size:19px;font-weight:950;color:white;margin-top:4px}.school{font-size:12px;margin-top:4px}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%) translateY(100px);background:#fff;color:#10182d;padding:11px 15px;border-radius:14px;font-weight:850;box-shadow:var(--shadow);transition:.3s;z-index:5}
+.toast.show{transform:translateX(-50%) translateY(0)}
+@media(min-width:700px){.hero{padding-top:40px}.navgrid{grid-template-columns:1fr 1fr}.event{grid-template-columns:110px 1fr}}
 </style>
 </head>
 <body>
-<header><h1>🇬🇧 Exmouth 2026</h1><p>Agenda del viaje · I.E.S. San Fernando · 27/09/2026–03/10/2026</p></header>
+<header class="hero">
+ <div class="brand">
+  <div><div class="eyebrow">I.E.S. SAN FERNANDO · BADAJOZ</div><h1>EXMOUTH<br>2026 🇬🇧</h1><div class="subtitle">Agenda inteligente del viaje · 27 septiembre — 3 octubre</div></div>
+  <div class="badge">🎒 VIAJE</div>
+ </div>
+</header>
 <main>
-<div class="controls" id="days"></div>
-<section class="hero">
-  <div class="date" id="date"></div><div class="clock" id="clock"></div>
-  <div class="now">
-    <div class="label" id="state">Estado</div><h2 id="current">—</h2><div class="times" id="currentTimes">—</div>
-    <div class="progress"><div class="bar" id="bar"></div></div><div class="times" id="percent"></div>
+ <section class="card top">
+  <div class="toolbar" id="days"></div>
+  <div class="status">
+   <div class="statusline"><div class="live" id="state">● AHORA</div><div class="date" id="date"></div></div>
+   <div class="clock" id="clock">00:00:00</div>
+   <div class="nowtitle" id="current">—</div>
+   <div class="time" id="currentTime">—</div>
+   <div class="progress"><div class="bar" id="bar"></div></div>
+   <div class="meta"><span id="pct">—</span><span id="remaining">—</span></div>
   </div>
-  <div class="grid">
-    <div class="small"><b>Anterior</b><span id="prev">—</span></div>
-    <div class="small"><b>Siguiente</b><span id="next">—</span></div>
+  <div class="navgrid">
+   <div class="mini"><small>⏮ ACTIVIDAD ANTERIOR</small><b id="prev">—</b></div>
+   <div class="mini"><small>⏭ ACTIVIDAD SIGUIENTE</small><b id="next">—</b></div>
   </div>
-</section>
-<h3 class="section-title">Todas las actividades del día</h3><div class="timeline" id="timeline"></div>
+  <div class="controls">
+   <button class="ctrl" onclick="today()">📍 Ir a hoy</button>
+   <button class="ctrl" onclick="scrollToTimeline()">📋 Ver horario completo</button>
+  </div>
+ </section>
+
+ <h2>📅 Programa del día</h2>
+ <div class="timeline" id="timeline"></div>
+
+ <footer class="bottom">
+   <div>🇬🇧 EXMOUTH 2026 · INMERSIÓN LINGÜÍSTICA</div>
+   <div class="author">Por Miguel Ojeda</div>
+   <div class="school">4.º C · I.E.S. San Fernando · Badajoz</div>
+ </footer>
 </main>
+<div class="toast" id="toast">Actividad actualizada</div>
+
 <script>
 const days=[
-{d:"Domingo 27/09",date:"2026-09-27",items:[
+{d:"Domingo 27",date:"2026-09-27",items:[
 ["09:00","12:30","Llegada"],["12:30","13:30","Comida"],["13:30","16:30","Orientación / tour"],["18:00","19:00","Cena"],["20:00","21:45","Tarde libre en familia"]]},
-{d:"Lunes 28/09",date:"2026-09-28",items:[
+{d:"Lunes 28",date:"2026-09-28",items:[
 ["09:00","12:30","Clases"],["12:30","13:30","Comida"],["13:30","16:30","Jurassic Coast"],["18:00","19:00","Cena"],["20:00","21:45","Tarde libre en familia"]]},
-{d:"Martes 29/09",date:"2026-09-29",items:[
+{d:"Martes 29",date:"2026-09-29",items:[
 ["09:00","12:30","Clases"],["12:30","13:30","Comida"],["13:30","16:30","Bowling"],["18:00","19:00","Cena"],["20:00","21:45","Disco"]]},
-{d:"Miércoles 30/09",date:"2026-09-30",items:[
+{d:"Miércoles 30",date:"2026-09-30",items:[
 ["09:00","12:30","Excursión a Bristol"],["12:30","13:30","Comida"],["13:30","16:30","Exeter Cultural"],["18:00","19:00","Cena"],["20:00","21:45","Tarde libre en familia"]]},
-{d:"Jueves 01/10",date:"2026-10-01",items:[
+{d:"Jueves 01",date:"2026-10-01",items:[
 ["09:00","12:30","Clases"],["12:30","13:30","Comida"],["13:30","16:30","Actividad / excursión del programa"],["18:00","19:00","Cena"],["20:00","21:45","Tarde libre en familia"]]},
-{d:"Viernes 02/10",date:"2026-10-02",items:[
+{d:"Viernes 02",date:"2026-10-02",items:[
 ["09:00","12:30","Clases"],["12:30","13:30","Comida"],["13:30","16:30","Actividad / excursión del programa"],["18:00","19:00","Cena"],["20:00","21:45","Tarde libre en familia"]]},
-{d:"Sábado 03/10",date:"2026-10-03",items:[
+{d:"Sábado 03",date:"2026-10-03",items:[
 ["09:00","12:30","Excursión guiada a Londres"],["12:30","13:30","Comida"],["13:30","16:30","Excursión guiada a Londres"],["18:00","19:00","Regreso"]]}
 ];
+let selected=0, lastCurrent="";
+const daysEl=document.getElementById("days");
+days.forEach((x,i)=>{const b=document.createElement("button");b.className="day";b.textContent=x.d;b.onclick=()=>{selected=i;render(false)};daysEl.appendChild(b)});
 
-let selected=0;
-const daysEl=document.getElementById('days');
-days.forEach((x,i)=>{let b=document.createElement('button');b.textContent=x.d.split(' ')[0]+' '+x.d.slice(-5);b.onclick=()=>{selected=i;render();};daysEl.appendChild(b);});
-
-function mins(t){let [h,m]=t.split(':').map(Number);return h*60+m}
-function fmt(x){return x.toString().padStart(2,'0')}
-function render(){
- [...daysEl.children].forEach((b,i)=>b.classList.toggle('active',i===selected));
- const day=days[selected], now=new Date(), same=now.toISOString().slice(0,10)===day.date;
- document.getElementById('date').textContent=day.d+(same?' · HOY':'');
- document.getElementById('clock').textContent=fmt(now.getHours())+':'+fmt(now.getMinutes())+':'+fmt(now.getSeconds());
- let n=now.getHours()*60+now.getMinutes()+now.getSeconds()/60, idx=-1;
- day.items.forEach((it,i)=>{if(n>=mins(it[0])&&n<mins(it[1]))idx=i});
- let cur=idx>=0?day.items[idx]:null;
- document.getElementById('current').textContent=cur?cur[2]:(n<mins(day.items[0][0])?'Aún no ha empezado el programa': 'Programa terminado');
- document.getElementById('state').textContent=cur?'Ahora mismo':(n<mins(day.items[0][0])?'Próximamente':'Fin del día');
- document.getElementById('currentTimes').textContent=cur?cur[0]+' – '+cur[1]:'';
- let pct=cur?Math.max(0,Math.min(100,(n-mins(cur[0]))/(mins(cur[1])-mins(cur[0]))*100)):0;
- document.getElementById('bar').style.width=pct+'%';document.getElementById('percent').textContent=cur?Math.round(pct)+'% de la actividad':'';
- document.getElementById('prev').textContent=idx>0?day.items[idx-1][2]:(idx===0?'Inicio del día':'—');
- document.getElementById('next').textContent=idx>=0&&idx<day.items.length-1?day.items[idx+1][2]:(idx===-1?day.items[0][2]:'Fin del día');
- const tl=document.getElementById('timeline');tl.innerHTML='';
- day.items.forEach((it,i)=>{let el=document.createElement('div');el.className='item '+(i===idx?'current':'');el.innerHTML='<div class="time">'+it[0]+'<br>↓<br>'+it[1]+'</div><div><div class="activity">'+it[2]+(i===idx?'<span class="tag">AHORA</span>':'')+'</div><div class="note">'+(i===idx?'Actividad en curso':'')+'</div></div>';tl.appendChild(el)});
+function M(t){let [h,m]=t.split(":").map(Number);return h*60+m}
+function pad(n){return String(n).padStart(2,"0")}
+function today(){
+ const d=new Date().toISOString().slice(0,10), i=days.findIndex(x=>x.date===d);
+ if(i>=0){selected=i;render(false)}else{toast("El viaje todavía no ha empezado o ya ha terminado")}
 }
-render();setInterval(render,1000);
+function toast(s){const e=document.getElementById("toast");e.textContent=s;e.classList.add("show");setTimeout(()=>e.classList.remove("show"),1800)}
+function scrollToTimeline(){document.getElementById("timeline").scrollIntoView({behavior:"smooth",block:"start"})}
+
+function render(showToast=true){
+ const day=days[selected], now=new Date(), realDate=now.toISOString().slice(0,10);
+ const same=realDate===day.date, n=now.getHours()*60+now.getMinutes()+now.getSeconds()/60;
+ [...daysEl.children].forEach((b,i)=>b.classList.toggle("active",i===selected));
+ document.getElementById("date").textContent=day.d+(same?" · HOY":"");
+ document.getElementById("clock").textContent=`${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+ let idx=day.items.findIndex(x=>n>=M(x[0])&&n<M(x[1]));
+ let cur=idx>=0?day.items[idx]:null;
+ if(cur){
+  document.getElementById("state").textContent="● AHORA";
+  document.getElementById("current").textContent=cur[2];
+  document.getElementById("currentTime").textContent=cur[0]+" — "+cur[1];
+  const pct=(n-M(cur[0]))/(M(cur[1])-M(cur[0]))*100;
+  document.getElementById("bar").style.width=Math.max(0,Math.min(100,pct))+"%";
+  document.getElementById("pct").textContent=Math.round(pct)+"% completado";
+  const left=Math.max(0,Math.round(M(cur[1])-n));
+  document.getElementById("remaining").textContent=`Quedan ${Math.floor(left/60)}h ${left%60}min`;
+ }else{
+  const before=n<M(day.items[0][0]);
+  document.getElementById("state").textContent=before?"● PRÓXIMAMENTE":"● FIN DEL DÍA";
+  document.getElementById("current").textContent=before?"El programa aún no ha empezado":"Programa terminado";
+  document.getElementById("currentTime").textContent=before?`Siguiente: ${day.items[0][0]}`:"";
+  document.getElementById("bar").style.width="0";document.getElementById("pct").textContent="";document.getElementById("remaining").textContent="";
+ }
+ document.getElementById("prev").textContent=idx>0?day.items[idx-1][2]:"—";
+ document.getElementById("next").textContent=idx>=0&&idx<day.items.length-1?day.items[idx+1][2]:(idx<0?day.items[0][2]:"Fin del día");
+ const tl=document.getElementById("timeline");tl.innerHTML="";
+ day.items.forEach((it,i)=>{
+  const e=document.createElement("div");
+  e.className="event "+(i===idx?"current ":"")+(idx>i?"past":"");
+  e.innerHTML=`<div class="t">${it[0]}<br>↓<br>${it[1]}</div><div><div class="name">${it[2]}${i===idx?'<span class="pill">AHORA</span>':""}</div><div class="desc">${i===idx?"Estás aquí · la barra superior muestra el progreso":idx>i?"Actividad ya realizada":"Actividad programada"}</div></div>`;
+  tl.appendChild(e);
+ });
+ if(showToast && lastCurrent!==`${selected}-${idx}` && cur){toast("Ahora: "+cur[2]);}
+ lastCurrent=`${selected}-${idx}`;
+}
+today();render(false);setInterval(()=>render(true),1000);
 </script>
-</body></html>
+</body>
+</html>
